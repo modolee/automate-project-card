@@ -27,5 +27,5 @@ This action change the status of project card.
 - name: Automate Project Card Step
   uses: modolee/automate-project-card@v0.1.6
   with:
-    gpa_token: ${{ secrets.GPA_TOKEN }}
+    gpa-token: ${{ secrets.GPA_TOKEN }}
 ```
