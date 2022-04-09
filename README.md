@@ -12,6 +12,8 @@ This action change the status of project card
 
 ## Example usage
 
-uses: actions/automate-project-card
-with:
-status: 'In Progress'
+```yml
+- uses: modolee/automate-project-card@0.1.0
+  with:
+    status: 'In Progress'
+```
