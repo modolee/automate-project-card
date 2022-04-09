@@ -109,7 +109,9 @@ class CreateEventHandler {
      * @returns
      */
     parseIssueNumber(text) {
+        console.log(text.split('#'));
         const issueNumber = text.split('#').pop();
+        console.log({ issueNumber });
         if (!issueNumber) {
             core.warning('Issue number is not numeric.');
             return null;

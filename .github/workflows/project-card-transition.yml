@@ -12,6 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automate Project Card Step
-        uses: modolee/automate-project-card@v0.1.6
+        uses: modolee/automate-project-card@v0.1.7
         with:
           gpa-token: ${{ secrets.GPA_TOKEN }}
