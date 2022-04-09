@@ -4,15 +4,20 @@ This action change the status of project card.
 
 ## Inputs
 
-### `reg-exp`
+### `branch-name`
 
-**Required** Regular Expression to compare with title of issue or pull quest.
+**Required** Regular Expression to compare with branch name.
+
+### `pull-request-title`
+
+**Required** Regular Expression to compare with pull request title.
 
 ## Example usage
 
 ```yml
 - name: Automate Project Card Step
-  uses: modolee/automate-project-card@v0.1.4
+  uses: modolee/automate-project-card@v0.1.5
   with:
-    reg-exp: '^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s|/|-]+#(\d)$'
+    branch-name: '^.+#(\d+)$'
+    pull-request-title: '^.+\(resolved #\d+\)$'
 ```

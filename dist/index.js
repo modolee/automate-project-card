@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 445:
+/***/ 4966:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -30,29 +30,86 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getEventHandler = void 0;
+exports.handleCreateEvent = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-exports.getEventHandler = {
-    create: handleCreateEvent,
-    pull_request: handelPullRequestEvent
-};
-function handleCreateEvent(regExp) {
+const handleCreateEvent = () => {
+    const regExpString = core.getInput('branch-name');
+    const regExp = new RegExp(regExpString);
     const payload = github.context.payload;
     const branchName = payload.ref;
-    core.info(JSON.stringify(payload));
     if (regExp.test(branchName)) {
         core.info(`Branch name is ${branchName}`);
     }
-}
-function handelPullRequestEvent(regExp) {
+};
+exports.handleCreateEvent = handleCreateEvent;
+
+
+/***/ }),
+
+/***/ 6375:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getEventHandler = void 0;
+const create_1 = __nccwpck_require__(4966);
+const pull_request_1 = __nccwpck_require__(8504);
+const eventHandlers = {
+    create: create_1.handleCreateEvent,
+    pull_request: pull_request_1.handlePullRequestEvent
+};
+const getEventHandler = (eventName) => {
+    return eventHandlers[eventName];
+};
+exports.getEventHandler = getEventHandler;
+
+
+/***/ }),
+
+/***/ 8504:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.handlePullRequestEvent = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
+const handlePullRequestEvent = () => {
+    const regExpString = core.getInput('pull-request-title');
+    const regExp = new RegExp(regExpString);
     const payload = github.context.payload;
     const pullRequestTitle = payload.pull_request.title;
-    core.info(JSON.stringify(payload));
     if (regExp.test(pullRequestTitle)) {
         core.info(`Pull request title is ${pullRequestTitle}`);
     }
-}
+};
+exports.handlePullRequestEvent = handlePullRequestEvent;
 
 
 /***/ }),
@@ -88,17 +145,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const event_handler_1 = __nccwpck_require__(445);
+const event_handlers_1 = __nccwpck_require__(6375);
 function run() {
     try {
-        const regExpString = core.getInput('reg-exp');
-        console.log({ regExpString });
-        const regExp = new RegExp(regExpString);
         const eventName = github.context.eventName;
         core.info(`eventName: ${eventName}`);
-        const eventHandler = event_handler_1.getEventHandler[eventName];
+        const eventHandler = (0, event_handlers_1.getEventHandler)(eventName);
         if (eventHandler)
-            eventHandler(regExp);
+            eventHandler();
     }
     catch (error) {
         if (error instanceof Error)

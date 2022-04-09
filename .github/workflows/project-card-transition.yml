@@ -11,7 +11,8 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: Use custom action
-        uses: modolee/automate-project-card@v0.1.4
+      - name: Automate Project Card Step
+        uses: modolee/automate-project-card@v0.1.5
         with:
-          reg-exp: '^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s|/|-]+#(\d)$'
+          branch-name: '^.+#(\d+)$'
+          pull-request-title: '^.+\(resolved #\d+\)$'

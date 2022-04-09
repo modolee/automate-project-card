@@ -1,3 +1,10 @@
+
+# Publishing
+dist/**
+!dist/index.**
+!dist/licenses.txt
+!dist/sourcemap-register.js
+
 # Logs
 logs
 *.log

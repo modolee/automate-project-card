@@ -1,8 +1,11 @@
 name: 'Automate Project Card'
 description: 'Automate github project card status transition'
 inputs:
-  reg-exp:
-    description: 'Regular Expression to compare with title of issue or pull quest'
+  branch-name:
+    description: 'Regular Expression to compare with branch name'
+    required: true
+  pull-request-title:
+    description: 'Regular Expression to compare with pull request title'
     required: true
 runs:
   using: 'node16'
