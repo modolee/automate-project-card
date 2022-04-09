@@ -1,0 +1,17 @@
+name: Project card transition
+on:
+  create:
+    branches:
+      - '*#*'
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use custom action
+        uses: modolee/automate-project-card@v0.1.4
+        with:
+          reg-exp: '^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s|/|-]+#(\d)$'

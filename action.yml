@@ -1,8 +1,8 @@
 name: 'Automate Project Card'
 description: 'Automate github project card status transition'
 inputs:
-  status:
-    description: 'Project card status to change'
+  reg-exp:
+    description: 'Regular Expression to compare with title of issue or pull quest'
     required: true
 runs:
   using: 'node16'

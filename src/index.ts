@@ -1,19 +1,18 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { CreateEvent } from '@octokit/webhooks-definitions/schema';
+import { getEventHandler } from './event-handler';
 
 function run(): void {
   try {
-    const status = core.getInput('status');
-    console.log({ status });
+    const regExpString = core.getInput('reg-exp');
+    console.log({ regExpString });
+    const regExp = new RegExp(regExpString);
 
     const eventName = github.context.eventName;
     core.info(`eventName: ${eventName}`);
 
-    if (eventName === 'create') {
-      const payload = <CreateEvent>github.context.payload;
-      core.info(JSON.stringify(payload));
-    }
+    const eventHandler = getEventHandler[eventName];
+    if (eventHandler) eventHandler(regExp);
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }
