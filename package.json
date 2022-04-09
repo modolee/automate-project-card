@@ -10,10 +10,10 @@
     "prebuild": "rimraf dist",
     "build": "tsc",
     "package": "ncc build --source-map --license licenses.txt",
-    "all": "yarn build && yarn package",
     "test": "jest --config ./jest.config.json",
     "test:watch": "yarn test --watch",
-    "test:cov": "yarn test --coverage"
+    "test:cov": "yarn test --coverage",
+    "all": "yarn build && yarn package && yarn test"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
