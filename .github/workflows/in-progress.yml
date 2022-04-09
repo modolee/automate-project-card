@@ -17,6 +17,6 @@ jobs:
         run: |
           echo $CURRENT_BRANCH
       - name: Use custom action
-        uses: modolee/automate-project-card@0.1.0
+        uses: modolee/automate-project-card@v0.1.0
         with:
           status: 'In Progress'
