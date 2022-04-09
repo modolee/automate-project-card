@@ -1,0 +1,9 @@
+name: 'Automate Project Card'
+description: 'Automate github project card status transition'
+inputs:
+  status:
+    description: 'Project card status to change'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/main.js'

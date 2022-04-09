@@ -1,15 +1,20 @@
 name: Move to In progress status
 on:
+  workflow_dispatch:
   create:
     branches:
     branches-ignore:
       - main
 
 jobs:
-  print_context:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - env:
-          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+      - name: Print Context
+        env:
+          CURRENT_BRANCH: ${{ github.event.ref }}
         run: |
-          echo $EVENT_CONTEXT
+          echo $CURRENT_BRANCH
+      - name: Use custom action
+        uses: modolee/automate-project-card
+        with: 'In Progress'

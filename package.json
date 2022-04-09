@@ -2,13 +2,13 @@
   "name": "automate-project-card",
   "version": "0.1.0",
   "description": "Automate github project card status transition",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "repository": "git@github.com:modolee/automate-project-card.git",
   "author": "modolee <modolee.si@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/index.js"
+    "start": "node ./dist/main.js"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
