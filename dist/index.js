@@ -29,20 +29,100 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.handleCreateEvent = void 0;
+exports.CreateEventHandler = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const handleCreateEvent = () => {
-    const regExpString = core.getInput('branch-name');
-    const regExp = new RegExp(regExpString);
-    const payload = github.context.payload;
-    const branchName = payload.ref;
-    if (regExp.test(branchName)) {
-        core.info(`Branch name is ${branchName}`);
+const number_helper_1 = __nccwpck_require__(7955);
+class CreateEventHandler {
+    constructor() {
+        this.regExp = /^.+#(\d+)$/;
     }
-};
-exports.handleCreateEvent = handleCreateEvent;
+    /**
+     * 이벤트 핸들 메인
+     */
+    handleEvent() {
+        const issueNumber = this.getIssueNumber();
+        if (!issueNumber) {
+            core.warning('This event is not valid event.');
+            return;
+        }
+        this.changeStatus(issueNumber);
+    }
+    /**
+     * 유효성 검사
+     * @returns
+     */
+    getIssueNumber() {
+        const event = github.context.payload;
+        const branchName = this.getBranchName(event);
+        if (!branchName) {
+            return null;
+        }
+        core.info(`Branch name is ${branchName}`);
+        const issueNumber = this.parseIssueNumber(branchName);
+        if (!issueNumber) {
+            return null;
+        }
+        core.info(`Issue number is ${issueNumber}`);
+        return issueNumber;
+    }
+    /**
+     * 상태 변경
+     * @param issueNumber
+     */
+    changeStatus(issueNumber) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const gpaToken = core.getInput('gpa-token');
+            const octokit = github.getOctokit(gpaToken);
+            const { repo } = github.context;
+            const repoList = yield octokit.rest.issues.listForRepo(repo);
+            console.log({ repoList });
+        });
+    }
+    /**
+     * 브랜치 이름 가져오기
+     * @param event
+     * @returns
+     */
+    getBranchName(event) {
+        const branchName = event.ref;
+        const isMatched = this.regExp.test(branchName);
+        if (!isMatched) {
+            core.warning('Branch name is not matched.');
+            return null;
+        }
+        return branchName;
+    }
+    /**
+     * 이슈번호 파싱하기
+     * @param text
+     * @returns
+     */
+    parseIssueNumber(text) {
+        const issueNumber = text.split('#').pop();
+        if (!issueNumber) {
+            core.warning('Issue number is not numeric.');
+            return null;
+        }
+        const isIssueNumberNumeric = (0, number_helper_1.isNumeric)(issueNumber);
+        if (!isIssueNumberNumeric) {
+            core.warning('Issue number is not numeric.');
+            return null;
+        }
+        return parseInt(issueNumber);
+    }
+}
+exports.CreateEventHandler = CreateEventHandler;
 
 
 /***/ }),
@@ -53,17 +133,22 @@ exports.handleCreateEvent = handleCreateEvent;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getEventHandler = void 0;
+exports.EventHandlerFactory = void 0;
 const create_1 = __nccwpck_require__(4966);
 const pull_request_1 = __nccwpck_require__(8504);
-const eventHandlers = {
-    create: create_1.handleCreateEvent,
-    pull_request: pull_request_1.handlePullRequestEvent
-};
-const getEventHandler = (eventName) => {
-    return eventHandlers[eventName];
-};
-exports.getEventHandler = getEventHandler;
+class EventHandlerFactory {
+    static getEventHandler(eventName) {
+        switch (eventName) {
+            case 'create':
+                return new create_1.CreateEventHandler();
+            case 'pull_request':
+                return new pull_request_1.PullRequestEventHandler();
+            default:
+                return null;
+        }
+    }
+}
+exports.EventHandlerFactory = EventHandlerFactory;
 
 
 /***/ }),
@@ -97,19 +182,48 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.handlePullRequestEvent = void 0;
+exports.PullRequestEventHandler = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const handlePullRequestEvent = () => {
-    const regExpString = core.getInput('pull-request-title');
-    const regExp = new RegExp(regExpString);
-    const payload = github.context.payload;
-    const pullRequestTitle = payload.pull_request.title;
-    if (regExp.test(pullRequestTitle)) {
-        core.info(`Pull request title is ${pullRequestTitle}`);
+class PullRequestEventHandler {
+    constructor() {
+        this.regExp = /^.+\(resolved #\d+\)$/;
     }
+    handleEvent() {
+        const payload = github.context.payload;
+        const pullRequestTitle = payload.pull_request.title;
+        const isMatched = this.regExp.test(pullRequestTitle);
+        if (isMatched) {
+            core.info(`Pull request title is ${pullRequestTitle}`);
+        }
+    }
+    getIssueNumber() {
+        return null;
+    }
+    changeStatus(issueNumber) { }
+    parseIssueNumber(text) {
+        return null;
+    }
+}
+exports.PullRequestEventHandler = PullRequestEventHandler;
+
+
+/***/ }),
+
+/***/ 7955:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isNumeric = void 0;
+const isNumeric = (value) => {
+    if (typeof value === 'undefined')
+        return false;
+    const isTypeString = typeof value === 'string';
+    return isNaN(isTypeString ? parseInt(value) : value);
 };
-exports.handlePullRequestEvent = handlePullRequestEvent;
+exports.isNumeric = isNumeric;
 
 
 /***/ }),
@@ -150,9 +264,9 @@ function run() {
     try {
         const eventName = github.context.eventName;
         core.info(`eventName: ${eventName}`);
-        const eventHandler = (0, event_handlers_1.getEventHandler)(eventName);
+        const eventHandler = event_handlers_1.EventHandlerFactory.getEventHandler(eventName);
         if (eventHandler)
-            eventHandler();
+            eventHandler.handleEvent();
     }
     catch (error) {
         if (error instanceof Error)

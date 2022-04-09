@@ -1,15 +1,27 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { PullRequestEvent } from '@octokit/webhooks-definitions/schema';
+import { IEventHandler } from './event-handler.interface';
 
-export const handlePullRequestEvent = (): void => {
-  const regExpString = core.getInput('pull-request-title');
-  const regExp = new RegExp(regExpString);
+export class PullRequestEventHandler implements IEventHandler {
+  private regExp = /^.+\(resolved #\d+\)$/;
 
-  const payload = <PullRequestEvent>github.context.payload;
-  const pullRequestTitle = payload.pull_request.title;
+  handleEvent(): void {
+    const payload = <PullRequestEvent>github.context.payload;
+    const pullRequestTitle = payload.pull_request.title;
 
-  if (regExp.test(pullRequestTitle)) {
-    core.info(`Pull request title is ${pullRequestTitle}`);
+    const isMatched = this.regExp.test(pullRequestTitle);
+
+    if (isMatched) {
+      core.info(`Pull request title is ${pullRequestTitle}`);
+    }
   }
-};
+
+  getIssueNumber(): number | null {
+    return null;
+  }
+  changeStatus(issueNumber: number): void {}
+  parseIssueNumber(text: string): number | null {
+    return null;
+  }
+}

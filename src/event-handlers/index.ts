@@ -1,15 +1,16 @@
-import { handleCreateEvent } from './create';
-import { handlePullRequestEvent } from './pull-request';
+import { IEventHandler } from './event-handler.interface';
+import { CreateEventHandler } from './create';
+import { PullRequestEventHandler } from './pull-request';
 
-interface IEventHandler {
-  [key: string]: Function;
+export class EventHandlerFactory {
+  static getEventHandler(eventName: string): IEventHandler | null {
+    switch (eventName) {
+      case 'create':
+        return new CreateEventHandler();
+      case 'pull_request':
+        return new PullRequestEventHandler();
+      default:
+        return null;
+    }
+  }
 }
-
-const eventHandlers: IEventHandler = {
-  create: handleCreateEvent,
-  pull_request: handlePullRequestEvent
-};
-
-export const getEventHandler = (eventName: string): Function => {
-  return eventHandlers[eventName];
-};

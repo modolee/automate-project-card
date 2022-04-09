@@ -1,11 +1,8 @@
 name: 'Automate Project Card'
 description: 'Automate github project card status transition'
 inputs:
-  branch-name:
-    description: 'Regular Expression to compare with branch name'
-    required: true
-  pull-request-title:
-    description: 'Regular Expression to compare with pull request title'
+  gpa-token:
+    description: 'Github personal access token'
     required: true
 runs:
   using: 'node16'

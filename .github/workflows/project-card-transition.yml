@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Automate Project Card Step
-        uses: modolee/automate-project-card@v0.1.5
+        uses: modolee/automate-project-card@v0.1.6
         with:
-          branch-name: '^.+#(\d+)$'
-          pull-request-title: '^.+\(resolved #\d+\)$'
+          gpa_token: ${{ secrets.GPA_TOKEN }}
