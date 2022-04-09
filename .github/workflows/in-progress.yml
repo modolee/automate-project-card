@@ -5,6 +5,7 @@ on:
     branches:
     branches-ignore:
       - main
+      - develop
 
 jobs:
   run:
@@ -15,6 +16,6 @@ jobs:
           CURRENT_BRANCH: ${{ github.event.ref }}
         run: |
           echo $CURRENT_BRANCH
-      - name: Use custom action
-        uses: modolee/automate-project-card
-        with: 'In Progress'
+      # - name: Use custom action
+      #   uses: modolee/automate-project-card
+      #   with: 'In Progress'
