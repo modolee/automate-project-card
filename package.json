@@ -1,6 +1,6 @@
 {
   "name": "automate-project-card",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Automate github project card status transition",
   "main": "dist/index.js",
   "repository": "git@github.com:modolee/automate-project-card.git",
@@ -9,7 +9,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
-    "package": "ncc build --source-map --license licenses.txt"
+    "package": "ncc build --source-map --license licenses.txt",
+    "all": "yarn build && yarn package"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",

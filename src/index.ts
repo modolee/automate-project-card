@@ -5,7 +5,7 @@ function run(): void {
   try {
     const status = core.getInput('status');
     console.log({ status });
-    console.log(`Branch Name: ${github.context.ref}`);
+    console.log(`Context: ${github.context}`);
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
   }
