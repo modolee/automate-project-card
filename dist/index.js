@@ -36,7 +36,12 @@ function run() {
     try {
         const status = core.getInput('status');
         console.log({ status });
-        console.log(`Context: ${github.context}`);
+        const eventName = github.context.eventName;
+        core.info(`eventName: ${eventName}`);
+        if (eventName === 'create') {
+            const payload = github.context.payload;
+            core.info(JSON.stringify(payload));
+        }
     }
     catch (error) {
         if (error instanceof Error)

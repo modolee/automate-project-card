@@ -1,6 +1,6 @@
 {
   "name": "automate-project-card",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Automate github project card status transition",
   "main": "dist/index.js",
   "repository": "git@github.com:modolee/automate-project-card.git",
@@ -17,6 +17,7 @@
     "@actions/github": "^5.0.1"
   },
   "devDependencies": {
+    "@octokit/webhooks-definitions": "^3.67.3",
     "@vercel/ncc": "^0.33.3",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
