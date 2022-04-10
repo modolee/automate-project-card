@@ -7,7 +7,21 @@ function run(): void {
     const eventName = github.context.eventName;
     core.info(`eventName: ${eventName}`);
 
-    const eventHandler = EventHandlerFactory.getEventHandler(eventName);
+    const gpaToken = core.getInput('gpa-token');
+    const orgName = core.getInput('org-name');
+    const projectNumber = parseInt(core.getInput('project-number'));
+    const inProgressColumn = core.getInput('in-progress-column');
+    const reviewColumn = core.getInput('review-column');
+
+    const eventHandler = EventHandlerFactory.getEventHandler(
+      eventName,
+      gpaToken,
+      orgName,
+      projectNumber,
+      inProgressColumn,
+      reviewColumn
+    );
+
     if (eventHandler) eventHandler.handleEvent();
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);

@@ -1,4 +1,4 @@
-import { isNumeric } from './number.helper';
+import { isNumeric } from '../number.helper';
 
 describe('Number Helper Test', () => {
   test('isNumeric', () => {

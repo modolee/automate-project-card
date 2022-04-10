@@ -1,9 +1,13 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { PullRequestEvent } from '@octokit/webhooks-definitions/schema';
-import { IEventHandler } from './event-handler.interface';
+import { BaseEventHandler } from './base';
+import { IEventHandler } from './interfaces/event-handler.interface';
 
-export class PullRequestEventHandler implements IEventHandler {
+export class PullRequestEventHandler
+  extends BaseEventHandler
+  implements IEventHandler
+{
   private regExp = /^.+\(resolved #\d+\)$/;
 
   handleEvent(): void {

@@ -1,6 +1,82 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 5621:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BaseEventHandler = void 0;
+const github = __importStar(__nccwpck_require__(5438));
+class BaseEventHandler {
+    constructor(gpaToken, orgName, projectNumber, inProgressColumn, reviewColumn) {
+        this.gpaToken = gpaToken;
+        this.orgName = orgName;
+        this.projectNumber = projectNumber;
+        this.inProgressColumn = inProgressColumn;
+        this.reviewColumn = reviewColumn;
+        this.octokit = github.getOctokit(gpaToken);
+        this.columnList = [];
+    }
+    init() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    getProjectList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(this.orgName);
+            return (yield this.octokit.rest.projects.listForOrg({ org: this.orgName }))
+                .data;
+        });
+    }
+    getProjectColumnList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // return (
+            //   await this.octokit.rest.projects.listColumns({
+            //     project_id: this.projectNumber,
+            //     per_page: 100
+            //   })
+            // ).data;
+        });
+    }
+}
+exports.BaseEventHandler = BaseEventHandler;
+
+
+/***/ }),
+
 /***/ 4966:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -43,8 +119,10 @@ exports.CreateEventHandler = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const number_helper_1 = __nccwpck_require__(7955);
-class CreateEventHandler {
+const base_1 = __nccwpck_require__(5621);
+class CreateEventHandler extends base_1.BaseEventHandler {
     constructor() {
+        super(...arguments);
         this.regExp = /^.+#(\d+)$/;
     }
     /**
@@ -77,33 +155,6 @@ class CreateEventHandler {
         return issueNumber;
     }
     /**
-     * 상태 변경
-     * @param issueNumber
-     */
-    changeStatus(issueNumber) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const gpaToken = core.getInput('gpa-token');
-            const octokit = github.getOctokit(gpaToken);
-            const { repo } = github.context;
-            const repoList = yield octokit.rest.issues.listForRepo(repo);
-            console.log({ repoList });
-        });
-    }
-    /**
-     * 브랜치 이름 가져오기
-     * @param event
-     * @returns
-     */
-    getBranchName(event) {
-        const branchName = event.ref;
-        const isMatched = this.regExp.test(branchName);
-        if (!isMatched) {
-            core.warning('Branch name is not matched.');
-            return null;
-        }
-        return branchName;
-    }
-    /**
      * 이슈번호 파싱하기
      * @param text
      * @returns
@@ -121,6 +172,33 @@ class CreateEventHandler {
         }
         return parseInt(issueNumber);
     }
+    /**
+     * 상태 변경
+     * @param issueNumber
+     */
+    changeStatus(issueNumber) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // const { repo } = github.context;
+            const repo = {
+                owner: 'modolee',
+                repo: 'automate-project-card'
+            };
+        });
+    }
+    /**
+     * 브랜치 이름 가져오기
+     * @param event
+     * @returns
+     */
+    getBranchName(event) {
+        const branchName = event.ref;
+        const isMatched = this.regExp.test(branchName);
+        if (!isMatched) {
+            core.warning('Branch name is not matched.');
+            return null;
+        }
+        return branchName;
+    }
 }
 exports.CreateEventHandler = CreateEventHandler;
 
@@ -137,12 +215,12 @@ exports.EventHandlerFactory = void 0;
 const create_1 = __nccwpck_require__(4966);
 const pull_request_1 = __nccwpck_require__(8504);
 class EventHandlerFactory {
-    static getEventHandler(eventName) {
+    static getEventHandler(eventName, gpaToken, orgName, projectNumber, inProgressColumn, reviewColumn) {
         switch (eventName) {
             case 'create':
-                return new create_1.CreateEventHandler();
+                return new create_1.CreateEventHandler(gpaToken, orgName, projectNumber, inProgressColumn, reviewColumn);
             case 'pull_request':
-                return new pull_request_1.PullRequestEventHandler();
+                return new pull_request_1.PullRequestEventHandler(gpaToken, orgName, projectNumber, inProgressColumn, reviewColumn);
             default:
                 return null;
         }
@@ -185,8 +263,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PullRequestEventHandler = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-class PullRequestEventHandler {
+const base_1 = __nccwpck_require__(5621);
+class PullRequestEventHandler extends base_1.BaseEventHandler {
     constructor() {
+        super(...arguments);
         this.regExp = /^.+\(resolved #\d+\)$/;
     }
     handleEvent() {
@@ -264,7 +344,12 @@ function run() {
     try {
         const eventName = github.context.eventName;
         core.info(`eventName: ${eventName}`);
-        const eventHandler = event_handlers_1.EventHandlerFactory.getEventHandler(eventName);
+        const gpaToken = core.getInput('gpa-token');
+        const orgName = core.getInput('org-name');
+        const projectNumber = parseInt(core.getInput('project-number'));
+        const inProgressColumn = core.getInput('in-progress-column');
+        const reviewColumn = core.getInput('review-column');
+        const eventHandler = event_handlers_1.EventHandlerFactory.getEventHandler(eventName, gpaToken, orgName, projectNumber, inProgressColumn, reviewColumn);
         if (eventHandler)
             eventHandler.handleEvent();
     }

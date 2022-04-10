@@ -25,7 +25,7 @@ This action change the status of project card.
 
 ```yml
 - name: Automate Project Card Step
-  uses: modolee/automate-project-card@v0.1.8
+  uses: modolee/automate-project-card@v0.1.9
   with:
     gpa-token: ${{ secrets.GPA_TOKEN }}
 ```

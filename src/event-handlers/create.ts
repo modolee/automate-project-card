@@ -2,9 +2,13 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { CreateEvent } from '@octokit/webhooks-definitions/schema';
 import { isNumeric } from '../helpers/number.helper';
-import { IEventHandler } from './event-handler.interface';
+import { BaseEventHandler } from './base';
+import { IEventHandler } from './interfaces/event-handler.interface';
 
-export class CreateEventHandler implements IEventHandler {
+export class CreateEventHandler
+  extends BaseEventHandler
+  implements IEventHandler
+{
   private regExp = /^.+#(\d+)$/;
 
   /**
@@ -42,35 +46,6 @@ export class CreateEventHandler implements IEventHandler {
   }
 
   /**
-   * 상태 변경
-   * @param issueNumber
-   */
-  async changeStatus(issueNumber: number): Promise<void> {
-    const gpaToken = core.getInput('gpa-token');
-    const octokit = github.getOctokit(gpaToken);
-    const { repo } = github.context;
-
-    const repoList = await octokit.rest.issues.listForRepo(repo);
-    console.log({ repoList });
-  }
-
-  /**
-   * 브랜치 이름 가져오기
-   * @param event
-   * @returns
-   */
-  getBranchName(event: CreateEvent): string | null {
-    const branchName = event.ref;
-    const isMatched = this.regExp.test(branchName);
-    if (!isMatched) {
-      core.warning('Branch name is not matched.');
-      return null;
-    }
-
-    return branchName;
-  }
-
-  /**
    * 이슈번호 파싱하기
    * @param text
    * @returns
@@ -89,5 +64,33 @@ export class CreateEventHandler implements IEventHandler {
     }
 
     return parseInt(issueNumber);
+  }
+
+  /**
+   * 상태 변경
+   * @param issueNumber
+   */
+  async changeStatus(issueNumber: number): Promise<void> {
+    // const { repo } = github.context;
+    const repo = {
+      owner: 'modolee',
+      repo: 'automate-project-card'
+    };
+  }
+
+  /**
+   * 브랜치 이름 가져오기
+   * @param event
+   * @returns
+   */
+  getBranchName(event: CreateEvent): string | null {
+    const branchName = event.ref;
+    const isMatched = this.regExp.test(branchName);
+    if (!isMatched) {
+      core.warning('Branch name is not matched.');
+      return null;
+    }
+
+    return branchName;
   }
 }
